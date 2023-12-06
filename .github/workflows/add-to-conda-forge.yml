@@ -11,6 +11,11 @@ on:
         type: string
         description: GitHub Username
         default: 'aktech'
+      upstream-github-account:
+        type: string
+        description: Upstream github username (conda-forge)
+        default: 'aktech'
+
 
 jobs:
   build:
@@ -70,3 +75,7 @@ jobs:
       - name: Create a PR on conda-forge
         run: |
           echo "TODO: Create a PR on conda-forge"
+          cd staged-recipes
+          branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
+          upstream_owner=${{ github.event.inputs.upstream-github-account }}
+          hub pull-request --base conda-forge:main --head ${{ github.event.inputs.github-username }}:$branch
