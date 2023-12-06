@@ -79,3 +79,5 @@ jobs:
           branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
           upstream_owner=${{ github.event.inputs.upstream-github-account }}
           hub pull-request --base conda-forge:main --head ${{ github.event.inputs.github-username }}:$branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
