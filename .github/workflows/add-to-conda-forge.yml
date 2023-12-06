@@ -38,7 +38,7 @@ jobs:
           ls staged-recipes/recipes/
       - name: Add github username to meta.yaml
         run: |
-          meta_yaml=staged-recipes/recipes/meta.yaml
+          meta_yaml=staged-recipes/recipes/${{ github.event.inputs.name }}/meta.yaml
           sed -i 's/AddYourGitHubIdHere/${{ github.event.inputs.github-username }}/g' $meta_yaml
       - name: Commit Recipe
         run: |
