@@ -25,6 +25,22 @@ jobs:
       - name: Install grayskull
         run: |
           conda install -c conda-forge grayskull
+      - name: Generate recipe for package using grayskull
+        run: |
           grayskull pypi ${{ github.event.inputs.name }}
           ls -ltrh
           ls ${{ github.event.inputs.name }}/meta.yaml
+      - name: Move recipe to staged recipe
+        run: |
+          cp ${{ github.event.inputs.name }} staged-recipes/recipes/ -r
+          ls staged-recipes/recipes/
+      - name: Commit Recipe
+        run: |
+          cd staged-recipes
+          git add .
+          git status
+          git commit -m "Add recipe for ${{ github.event.inputs.name }}"
+          git log
+      - name: Push recipe
+        run: |
+          echo "Push recipe"
