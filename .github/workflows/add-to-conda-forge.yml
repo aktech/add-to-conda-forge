@@ -36,9 +36,10 @@ jobs:
         run: |
           cp ${{ github.event.inputs.name }} staged-recipes/recipes/ -r
           ls staged-recipes/recipes/
-      - name: Add username
+      - name: Add github username to meta.yaml
         run: |
-          sed -i 's/AddYourGitHubIdHere/${{ github.event.inputs.github-username }}/g' requirements.txt
+          meta_yaml=staged-recipes/recipes/meta.yaml
+          sed -i 's/AddYourGitHubIdHere/${{ github.event.inputs.github-username }}/g' $meta_yaml
       - name: Commit Recipe
         run: |
           cd staged-recipes
@@ -47,10 +48,7 @@ jobs:
           git config --global user.email "dtu.amit@gmail.com"
           git config --global user.name "Amit Kumar"
           git commit -m "Add recipe for ${{ github.event.inputs.name }}"
-      - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.17
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
       - name: Add Fork remote
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
