@@ -41,6 +41,7 @@ jobs:
           git commit -m "Add recipe for ${{ github.event.inputs.name }}"
       - name: Add Fork remote
         run: |
+          cd staged-recipes
           git remote -v
           git remote add fork https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
           git remote -v
@@ -48,6 +49,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Push recipe to the fork branch
         run: |
+          cd staged-recipes
           echo "Pushing recipe"
           git checkout -b ${{ github.event.inputs.name }}-$GITHUB_SHA
           git push fork
