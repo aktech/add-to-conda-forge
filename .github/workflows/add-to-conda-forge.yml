@@ -78,6 +78,6 @@ jobs:
           cd staged-recipes
           branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
           upstream_owner=${{ github.event.inputs.upstream-github-account }}
-          hub pull-request --base conda-forge:main --head ${{ github.event.inputs.github-username }}:$branch
+          hub pull-request -m "Add recipe for ${{ github.event.inputs.name }}" --base conda-forge:main --head ${{ github.event.inputs.github-username }}:$branch
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
