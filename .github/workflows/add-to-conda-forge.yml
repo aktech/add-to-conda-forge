@@ -29,9 +29,9 @@ jobs:
       - name: Clone staged-reciped
         run: |
           git clone https://github.com/conda-forge/staged-recipes
-      - name: Install grayskull
+      - name: Install grayskull and hub
         run: |
-          conda install -c conda-forge grayskull
+          conda install -c conda-forge grayskull hub
       - name: Generate recipe for package using grayskull
         run: |
           grayskull pypi ${{ github.event.inputs.name }}
