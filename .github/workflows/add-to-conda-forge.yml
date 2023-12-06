@@ -1,7 +1,6 @@
 name: Add to conda-forge
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       name:
@@ -41,15 +40,18 @@ jobs:
           git config --global user.name "Amit Kumar"
           git commit -m "Add recipe for ${{ github.event.inputs.name }}"
       - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.17          
+        uses: mxschmitt/action-tmate@v3.17
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Add Fork remote
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           cd staged-recipes
           git remote -v
-          git remote add fork https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
+          url=https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
+          git remote add fork $url
           git remote -v
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
                 
       - name: Push recipe to the fork branch
         run: |
