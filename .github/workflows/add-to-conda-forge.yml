@@ -46,3 +46,7 @@ jobs:
       - name: Push recipe
         run: |
           echo "Push recipe"
+
+      - name: Debugging with tmate
+        uses: mxschmitt/action-tmate@v3.17
+    
