@@ -1,0 +1,30 @@
+name: Add to conda-forge
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        type: string
+        description: PyPi package name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3.0.1
+      - name: Clone staged-reciped
+        run: |
+          git clone https://github.com/conda-forge/staged-recipes
+      - name: Install grayskull
+        run: |
+          conda install -c conda-forge grayskull
+          grayskull pypi ${{ github.event.inputs.name }}
+          ls -ltrh
+          ls ${{ github.event.inputs.name }}/meta.yaml
