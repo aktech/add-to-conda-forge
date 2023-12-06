@@ -42,11 +42,18 @@ jobs:
           git config --global user.email "dtu.amit@gmail.com"
           git config --global user.name "Amit Kumar"
           git commit -m "Add recipe for ${{ github.event.inputs.name }}"
-          git log
-      - name: Push recipe
+      - name: Add Fork remote
         run: |
-          echo "Push recipe"
-
-      - name: Debugging with tmate
-        uses: mxschmitt/action-tmate@v3.17
+          git remote add fork https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
+          git remote -v
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Push recipe to the fork branch
+        run: |
+          echo "Pushing recipe"
+          git checkout -b ${{ github.event.inputs.name }}-$GITHUB_SHA
+          git push fork
     
+      - name: Create a PR on conda-forge
+        run: |
+          echo "TODO: Create a PR on conda-forge"
