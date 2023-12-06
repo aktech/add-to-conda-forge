@@ -44,6 +44,7 @@ jobs:
           git commit -m "Add recipe for ${{ github.event.inputs.name }}"
       - name: Add Fork remote
         run: |
+          git remote -v
           git remote add fork https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
           git remote -v
         env:
