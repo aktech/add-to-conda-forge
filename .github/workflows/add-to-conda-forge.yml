@@ -47,6 +47,9 @@ jobs:
           git remote -v
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Debugging with tmate
+        uses: mxschmitt/action-tmate@v3.17
+                
       - name: Push recipe to the fork branch
         run: |
           cd staged-recipes
