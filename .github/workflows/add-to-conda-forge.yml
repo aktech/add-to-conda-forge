@@ -6,6 +6,11 @@ on:
       name:
         type: string
         description: PyPi package name
+        default: 'criclive'
+      github-username:
+        type: string
+        description: GitHub Username
+        default: 'aktech'
 
 jobs:
   build:
@@ -31,6 +36,9 @@ jobs:
         run: |
           cp ${{ github.event.inputs.name }} staged-recipes/recipes/ -r
           ls staged-recipes/recipes/
+      - name: Add username
+        run: |
+          sed -i 's/AddYourGitHubIdHere/${{ github.event.inputs.github-username }}/g' requirements.txt
       - name: Commit Recipe
         run: |
           cd staged-recipes
@@ -49,7 +57,8 @@ jobs:
         run: |
           cd staged-recipes
           git remote -v
-          url=https://aktech:$GH_TOKEN@github.com/aktech/staged-recipes.git
+          github_username=${{ github.event.inputs.github-username }}
+          url=https://$github_username:$GH_TOKEN@github.com/$github_username/staged-recipes.git
           git remote add fork $url
           git remote -v
                 
@@ -57,7 +66,7 @@ jobs:
         run: |
           cd staged-recipes
           echo "Pushing recipe"
-          git checkout -b ${{ github.event.inputs.name }}-$GITHUB_SHA
+          git checkout -b ${{ github.event.inputs.name }}-${GITHUB_SHA::7}
           git push fork
     
       - name: Create a PR on conda-forge
