@@ -14,9 +14,6 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v3
-      - name: Run a one-line script
-        run: echo Hello, world!
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3.0.1
       - name: Clone staged-reciped
