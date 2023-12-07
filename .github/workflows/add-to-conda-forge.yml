@@ -55,8 +55,8 @@ jobs:
           echo "pr_branch=$pr_branch" >> "$GITHUB_OUTPUT"
           echo "gh_username=$github_username" >> "$GITHUB_OUTPUT"
           echo "upstream_github_username=$upstream_github_username" >> "$GITHUB_OUTPUT"
-          echo "name=$upstream_github_username" >> "$GITHUB_OUTPUT"
-          echo "email=$upstream_github_username" >> "$GITHUB_OUTPUT"
+          echo "name=$git_name" >> "$GITHUB_OUTPUT"
+          echo "email=$git_email" >> "$GITHUB_OUTPUT"
 
       - name: Get event type
         run: |
