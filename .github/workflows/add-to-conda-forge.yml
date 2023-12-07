@@ -17,7 +17,6 @@ on:
         description: Upstream github username (conda-forge)
         default: 'aktech'
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -99,13 +98,13 @@ jobs:
           echo "Pushing recipe"
           git checkout -b ${{ steps.set-inputs.outputs.pr_branch }}
           git push fork
-      # - name: Create a PR on conda-forge
-      #   if:  github.event_name == 'workflow_dispatch'
-      #   run: |
-      #     echo "Creating a PR on conda-forge"
-      #     cd staged-recipes
-      #     branch=${{ steps.set-inputs.outputs.pr_branch }}
-      #     upstream_owner=${{ steps.set-inputs.outputs.upstream_github_username }}
-      #     hub pull-request -m "Add recipe for ${{ steps.set-inputs.outputs.package_name }}" --base $upstream_owner:main --head ${{ steps.set-inputs.outputs.gh_username }}:$branch
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Create a PR on conda-forge
+        if:  github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Creating a PR on conda-forge"
+          cd staged-recipes
+          branch=${{ steps.set-inputs.outputs.pr_branch }}
+          upstream_owner=${{ steps.set-inputs.outputs.upstream_github_username }}
+          hub pull-request -m "Add recipe for ${{ steps.set-inputs.outputs.package_name }}" --base $upstream_owner:main --head ${{ steps.set-inputs.outputs.gh_username }}:$branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
