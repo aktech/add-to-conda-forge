@@ -16,6 +16,14 @@ on:
         type: string
         description: Upstream github username (conda-forge)
         default: 'aktech'
+      git-name:
+        type: string
+        description: Git config Name
+        default: 'Amit Kumar'
+      git-email:
+        type: string
+        description: Git config Email
+        default: 'dtu.amit@gmail.com'
 
 jobs:
   build:
@@ -37,10 +45,18 @@ jobs:
           input_upstream_github_username=${{ github.event.inputs.upstream-github-account }}
           upstream_github_username=${input_upstream_github_username:-"aktech"}
 
+          input_git_name=${{ github.event.inputs.git-name }}
+          git_name=${input_upstream_github_username:-"Amit"}
+
+          input_git_email=${{ github.event.inputs.git-email }}
+          git_email=${input_upstream_github_username:-"dtu.amit@gmail.com"}
+
           echo "package_name=$package_name" >> "$GITHUB_OUTPUT"
           echo "pr_branch=$pr_branch" >> "$GITHUB_OUTPUT"
           echo "gh_username=$github_username" >> "$GITHUB_OUTPUT"
           echo "upstream_github_username=$upstream_github_username" >> "$GITHUB_OUTPUT"
+          echo "name=$upstream_github_username" >> "$GITHUB_OUTPUT"
+          echo "email=$upstream_github_username" >> "$GITHUB_OUTPUT"
 
       - name: Get event type
         run: |
@@ -78,10 +94,8 @@ jobs:
           cd staged-recipes
           git add .
           git status
-          # TODO: Make this configurable
-          
-          git config --global user.email "dtu.amit@gmail.com"
-          git config --global user.name "Amit Kumar"
+          git config --global user.email "${{ steps.set-inputs.outputs.git_email }}"
+          git config --global user.name "${{ steps.set-inputs.outputs.git_name }}"
           git commit -m "Add recipe for ${{ steps.set-inputs.outputs.package_name }}"
 
       - name: Add Fork remote
