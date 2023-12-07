@@ -1,6 +1,7 @@
 name: Add to conda-forge
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       name:
@@ -71,13 +72,16 @@ jobs:
           echo "Pushing recipe"
           git checkout -b ${{ github.event.inputs.name }}-${GITHUB_SHA::7}
           git push fork
-    
-      - name: Create a PR on conda-forge
+
+      - name: Get event type
         run: |
-          echo "TODO: Create a PR on conda-forge"
-          cd staged-recipes
-          branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
-          upstream_owner=${{ github.event.inputs.upstream-github-account }}
-          hub pull-request -m "Add recipe for ${{ github.event.inputs.name }}" --base $upstream_owner:main --head ${{ github.event.inputs.github-username }}:$branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          echo ${{ github.event_name }} 
+      # - name: Create a PR on conda-forge
+      #   run: |
+      #     echo "Creating a PR on conda-forge"
+      #     cd staged-recipes
+      #     branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
+      #     upstream_owner=${{ github.event.inputs.upstream-github-account }}
+      #     hub pull-request -m "Add recipe for ${{ github.event.inputs.name }}" --base $upstream_owner:main --head ${{ github.event.inputs.github-username }}:$branch
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
