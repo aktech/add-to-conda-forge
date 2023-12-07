@@ -25,35 +25,62 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
+
+      - name: Set Inputs
+        id: set-inputs
+        run: |
+          input_package_name=${{ github.event.inputs.name }}
+          package_name=${input_package_name:-"criclive"}
+          timestamp=$(date +%s)
+          pr_branch=package_name-$timestamp
+          input_github_username=${{ github.event.inputs.github-username }}
+          github_username=${input_github_username:-"aktech"}
+
+          input_upstream_github_username=${{ github.event.inputs.upstream-github-account }}
+          upstream_github_username=${input_upstream_github_username:-"aktech"}
+
+          echo "package_name=$package_name" >> "$GITHUB_OUTPUT"
+          echo "pr_branch=$pr_branch" >> "$GITHUB_OUTPUT"
+          echo "gh_username=$github_username" >> "$GITHUB_OUTPUT"
+          echo "upstream_github_username=$upstream_github_username" >> "$GITHUB_OUTPUT"
+
+      - name: Get event type
+        run: |
+          echo ${{ github.event_name }} 
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v3.0.1
+        with:
+          mamba-version: "*"
+          channels: conda-forge
       - name: Clone staged-reciped
         run: |
           git clone https://github.com/conda-forge/staged-recipes
       - name: Install grayskull and hub
         run: |
-          conda install -c conda-forge grayskull hub
+          mamba install -c conda-forge grayskull hub
       - name: Generate recipe for package using grayskull
         run: |
-          grayskull pypi ${{ github.event.inputs.name }}
+          grayskull pypi ${{ steps.set-inputs.outputs.package_name }}
           ls -ltrh
-          ls ${{ github.event.inputs.name }}/meta.yaml
+          ls ${{ steps.set-inputs.outputs.package_name }}/meta.yaml
       - name: Move recipe to staged recipe
         run: |
-          cp ${{ github.event.inputs.name }} staged-recipes/recipes/ -r
+          cp  ${{ steps.set-inputs.outputs.package_name }} staged-recipes/recipes/ -r
           ls staged-recipes/recipes/
       - name: Add github username to meta.yaml
         run: |
-          meta_yaml=staged-recipes/recipes/${{ github.event.inputs.name }}/meta.yaml
-          sed -i 's/AddYourGitHubIdHere/${{ github.event.inputs.github-username }}/g' $meta_yaml
+          meta_yaml=staged-recipes/recipes/${{ steps.set-inputs.outputs.package_name }}/meta.yaml
+          sed -i 's/AddYourGitHubIdHere/${{ steps.set-inputs.outputs.gh_username }}/g' $meta_yaml
       - name: Commit Recipe
         run: |
           cd staged-recipes
           git add .
           git status
+          # TODO: Make this configurable
+          
           git config --global user.email "dtu.amit@gmail.com"
           git config --global user.name "Amit Kumar"
-          git commit -m "Add recipe for ${{ github.event.inputs.name }}"
+          git commit -m "Add recipe for ${{ steps.set-inputs.outputs.package_name }}"
 
       - name: Add Fork remote
         env:
@@ -61,7 +88,7 @@ jobs:
         run: |
           cd staged-recipes
           git remote -v
-          github_username=${{ github.event.inputs.github-username }}
+          github_username=${{ steps.set-inputs.outputs.gh_username }}
           url=https://$github_username:$GH_TOKEN@github.com/$github_username/staged-recipes.git
           git remote add fork $url
           git remote -v
@@ -70,18 +97,15 @@ jobs:
         run: |
           cd staged-recipes
           echo "Pushing recipe"
-          git checkout -b ${{ github.event.inputs.name }}-${GITHUB_SHA::7}
+          git checkout -b ${{ steps.set-inputs.outputs.pr_branch }}
           git push fork
-
-      - name: Get event type
-        run: |
-          echo ${{ github.event_name }} 
       # - name: Create a PR on conda-forge
+      #   if:  github.event_name == 'workflow_dispatch'
       #   run: |
       #     echo "Creating a PR on conda-forge"
       #     cd staged-recipes
-      #     branch=${{ github.event.inputs.name }}-${GITHUB_SHA::7}
-      #     upstream_owner=${{ github.event.inputs.upstream-github-account }}
-      #     hub pull-request -m "Add recipe for ${{ github.event.inputs.name }}" --base $upstream_owner:main --head ${{ github.event.inputs.github-username }}:$branch
+      #     branch=${{ steps.set-inputs.outputs.pr_branch }}
+      #     upstream_owner=${{ steps.set-inputs.outputs.upstream_github_username }}
+      #     hub pull-request -m "Add recipe for ${{ steps.set-inputs.outputs.package_name }}" --base $upstream_owner:main --head ${{ steps.set-inputs.outputs.gh_username }}:$branch
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
