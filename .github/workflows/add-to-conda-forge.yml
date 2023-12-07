@@ -46,10 +46,10 @@ jobs:
           upstream_github_username=${input_upstream_github_username:-"aktech"}
 
           input_git_name=${{ github.event.inputs.git-name }}
-          git_name=${input_upstream_github_username:-"Amit"}
+          git_name=${input_git_name:-"Amit"}
 
           input_git_email=${{ github.event.inputs.git-email }}
-          git_email=${input_upstream_github_username:-"dtu.amit@gmail.com"}
+          git_email=${input_git_email:-"dtu.amit@gmail.com"}
 
           echo "package_name=$package_name" >> "$GITHUB_OUTPUT"
           echo "pr_branch=$pr_branch" >> "$GITHUB_OUTPUT"
