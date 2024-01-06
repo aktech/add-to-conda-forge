@@ -45,7 +45,7 @@ jobs:
           input_upstream_github_username=${{ github.event.inputs.upstream-github-account }}
           upstream_github_username=${input_upstream_github_username:-"aktech"}
 
-          input_git_name=${{ github.event.inputs.git-name }}
+          input_git_name="${{ github.event.inputs.git-name }}"
           git_name=${input_git_name:-"Amit"}
 
           input_git_email=${{ github.event.inputs.git-email }}
