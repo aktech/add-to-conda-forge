@@ -38,7 +38,7 @@ jobs:
           input_package_name=${{ github.event.inputs.name }}
           package_name=${input_package_name:-"criclive"}
           timestamp=$(date +%s)
-          pr_branch=package_name-$timestamp
+          pr_branch=$package_name-$timestamp
           input_github_username=${{ github.event.inputs.github-username }}
           github_username=${input_github_username:-"aktech"}
 
